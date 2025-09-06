@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disease Diagnosis - Health App</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f9fafb;
+      color: #333;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #0066cc;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 1000;
+    }
+
+    header .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #ffcc00;
+    }
+
+    /* Main */
+    main {
+      margin-top: 80px; /* offset header */
+      padding: 2rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Disease selection */
+    .selection {
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    select, input[type="search"], button {
+      padding: 0.6rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button.download {
+      background: #0066cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button.download:hover {
+      background: #004d99;
+    }
+
+    /* Charts */
+    .charts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .chart-box {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background: #f1f5f9;
+      font-weight: bold;
+    }
+
+    tr:hover {
+      background: #f9fafb;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">HealthApp</div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Disease Diagnosis</a></li>
+        <li><a href="#">Profile</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <!-- Disease Selection -->
+    <div class="selection">
+      <label for="disease">Select Disease:</label>
+      <select id="disease">
+        <option value="diabetes">Diabetes</option>
+        <option value="hypertension">Hypertension</option>
+        <option value="asthma">Asthma</option>
+      </select>
+      <input type="search" placeholder="Search disease...">
+      <button class="download">Download Report</button>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts">
+      <div class="chart-box">
+        <h3>Category Proportions</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>Severity Levels</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Diagnosis Summary Table -->
+    <h3>Diagnosis Summary</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Disease</th>
+          <th>Severity</th>
+          <th>Last Check</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Diabetes</td>
+          <td>Moderate</td>
+          <td>01 Sep 2025</td>
+          <td>Stable</td>
+        </tr>
+        <tr>
+          <td>Hypertension</td>
+          <td>High</td>
+          <td>20 Aug 2025</td>
+          <td>Needs Attention</td>
+        </tr>
+        <tr>
+          <td>Asthma</td>
+          <td>Mild</td>
+          <td>15 Aug 2025</td>
+          <td>Improving</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <!-- Chart.js Scripts -->
+  <script>
+    // Pie Chart
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Diabetes', 'Hypertension', 'Asthma'],
+        datasets: [{
+          data: [40, 35, 25],
+          backgroundColor: ['#0066cc', '#ff9933', '#66cc66']
+        }]
+      }
+    });
+
+    // Bar Chart
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Mild', 'Moderate', 'Severe'],
+        datasets: [{
+          label: 'Cases',
+          data: [10, 20, 15],
+          backgroundColor: '#0066cc'
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
